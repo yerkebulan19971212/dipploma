@@ -1,24 +1,62 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.signals import user_logged_in
+
+# rest_framework
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin
 from rest_framework.response import Response
+# from django.contrib.auth.signals import user_logged_in
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import permissions
+from rest_framework_jwt.utils import jwt_payload_handler
+import jwt
 
 from .serializers import UserSerializer
+from config.settings import local as settings
 
 User = get_user_model()
 
 
-class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    lookup_field = "username"
+class CreateUserAPIView(APIView):
+    # permission_classes = (AllowAny,)
 
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.request.user.id)
+    def post(self, request):
+        user = request.data
+        serializer = UserSerializer(data=user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=["GET"])
-    def me(self, request):
-        serializer = UserSerializer(request.user, context={"request": request})
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny, ])
+def authenticate_user(request):
+    try:
+        email = request.data['email']
+        password = request.data['password']
+
+        user = User.objects.get(email=email, password=password)
+        if user:
+            try:
+                payload = jwt_payload_handler(user)
+                token = jwt.encode(payload, settings.SECRET_KEY)
+                user_details = {}
+                user_details['name'] = "%s %s" % (
+                    user.first_name, user.last_name)
+                user_details['token'] = token
+                user_logged_in.send(sender=user.__class__,
+                                    request=request, user=user)
+                return Response(user_details, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                raise e
+        else:
+            res = {
+                'error': 'can not authenticate with the given credentials or the account has been deactivated'}
+            return Response(res, status=status.HTTP_403_FORBIDDEN)
+    except KeyError:
+        res = {'error': 'please provide a email and a password'}
+        return Response(res)

@@ -3,10 +3,13 @@ from smart_note_diploma.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
+    date_joined = serializers.ReadOnlyField()
+
+    class Meta(object):
         model = User
-        fields = ["username", "email", "name", "url"]
+        fields = ('id', 'email', 'first_name', 'last_name', 'date_joined', 'password')
 
         extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
+            'password': {'write_only': True}
         }
+

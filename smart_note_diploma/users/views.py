@@ -23,8 +23,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     fields = ["name"]
 
-    def get_success_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+    # def get_success_url(self):
+    #     return reverse("users:detail", kwargs={"username": self.request.user.username})
 
     def get_object(self):
         return User.objects.get(username=self.request.user.username)
@@ -43,8 +43,8 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     permanent = False
 
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+    # def get_redirect_url(self):
+    #     return reverse("users:detail", kwargs={"username": self.request.user.username})
 
 
 user_redirect_view = UserRedirectView.as_view()

@@ -331,3 +331,8 @@ smart_note_diploma/media/
 .env
 .envs/*
 !.envs/.local/
+
+# django migrations
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
