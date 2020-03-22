@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.signals import user_logged_in
 
 # rest_framework
@@ -38,7 +39,7 @@ def authenticate_user(request):
         email = request.data['email']
         password = request.data['password']
 
-        user = User.objects.get(email=email, password=password)
+        user = get_object_or_404(User, email=email, password=password)
         if user:
             try:
                 payload = jwt_payload_handler(user)
