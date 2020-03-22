@@ -17,6 +17,12 @@ class Country(models.Model):
     name = models.CharField(max_length=128)
     short_name = models.CharField(max_length=12)
 
+    def __str__(self):
+        return " - ".join([self.short_name, self.name])
+
 
 class Hashtags(models.Model):
     hash_tag = models.CharField(max_length=16)
+
+    def __str__(self):
+        return self.hash_tag
