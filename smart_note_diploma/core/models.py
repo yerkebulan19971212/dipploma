@@ -18,3 +18,5 @@ class Country(models.Model):
     short_name = models.CharField(max_length=12)
 
 
+class Hashtags(models.Model):
+    hash_tag = models.CharField(max_length=16)
