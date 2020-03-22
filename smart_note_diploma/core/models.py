@@ -14,7 +14,7 @@ class TimeStampedModel(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharFields(max_length=128)
+    name = models.CharField(max_length=128)
     short_name = models.CharField(max_length=12)
 
 
