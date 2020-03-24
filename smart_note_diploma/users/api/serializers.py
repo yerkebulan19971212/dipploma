@@ -6,11 +6,11 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    date_joined = serializers.ReadOnlyField()
+    created = serializers.ReadOnlyField()
 
     class Meta(object):
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'date_joined', 'password')
+        fields = ('id', 'email', 'first_name', 'last_name', 'created', 'password')
 
         extra_kwargs = {
             'password': {'write_only': True}

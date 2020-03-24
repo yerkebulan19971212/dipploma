@@ -4,11 +4,8 @@ from django.contrib.auth.signals import user_logged_in
 
 # rest_framework
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 # from django.contrib.auth.signals import user_logged_in
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
