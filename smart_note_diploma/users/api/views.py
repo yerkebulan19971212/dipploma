@@ -4,29 +4,30 @@ from django.contrib.auth.signals import user_logged_in
 
 # rest_framework
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-# from django.contrib.auth.signals import user_logged_in
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework_jwt.utils import jwt_payload_handler
 import jwt
 
-from .serializers import UserSerializer
+from .serializers import CreateUserSerializer
 from config.settings import local as settings
 
 User = get_user_model()
 
 
-class CreateUserAPIView(APIView):
-    # permission_classes = (AllowAny,)
+class CreateUser(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = CreateUserSerializer
 
-    def post(self, request):
-        user = request.data
-        serializer = UserSerializer(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # def post(self, request):
+    #     user = request.data
+    #     serializer = UserSerializer(data=user)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

@@ -1,16 +1,17 @@
+# rest_framework imports
 from rest_framework import serializers
-# from smart_note_diploma.users.models import User
+
+# django imports
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
-    created = serializers.ReadOnlyField()
+class CreateUserSerializer(serializers.ModelSerializer):
 
-    class Meta(object):
+    class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'created', 'password')
+        fields = ('email', 'first_name', 'last_name', 'password')
 
         extra_kwargs = {
             'password': {'write_only': True}

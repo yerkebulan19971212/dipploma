@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
-from django.utils import timezone
-from django.contrib.auth.models import ( AbstractBaseUser, PermissionsMixin)
+from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
 
 from smart_note_diploma.users.manager import UserManager
 from smart_note_diploma.core.models import (TimeStampedModel, Country)
@@ -9,12 +8,12 @@ from smart_note_diploma.core.models import (TimeStampedModel, Country)
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     """
-       An abstract base class implementing a fully featured User model with
-       admin-compliant permissions.
+    An abstract base class implementing a fully featured User model with
+    admin-compliant permissions.
     """
     email = models.EmailField(max_length=40, unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    first_name = models.CharField(max_length=30,)
+    last_name = models.CharField(max_length=30,)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -27,6 +26,3 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
         return self
-
-    # def get_absolute_url(self):
-    #     return reverse("users:detail", kwargs={"username": self.username})
