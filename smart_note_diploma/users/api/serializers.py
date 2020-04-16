@@ -4,10 +4,15 @@ from rest_framework import serializers
 # django imports
 from django.contrib.auth import get_user_model
 
+# get user model
 User = get_user_model()
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    """
+    This serializer returns and validates user data
+    use it to create new User
+    """
 
     class Meta:
         model = User

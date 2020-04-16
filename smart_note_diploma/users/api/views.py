@@ -1,6 +1,7 @@
+# python library imports
 import jwt
 
-# rest_framework
+# rest_framework imports
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
@@ -18,6 +19,7 @@ from django.contrib.auth.signals import user_logged_in
 from .serializers import CreateUserSerializer
 from config.settings import local as settings
 
+# get User model
 User = get_user_model()
 
 
@@ -38,9 +40,7 @@ def authenticate_user(request):
             try:
                 payload = jwt_payload_handler(user)
                 token = jwt.encode(payload, settings.SECRET_KEY)
-                user_details = {}
-                user_details['name'] = "%s %s" % (
-                    user.first_name, user.last_name)
+                user_details = dict()
                 user_details['token'] = token
                 user_logged_in.send(sender=user.__class__,
                                     request=request, user=user)
