@@ -1,6 +1,4 @@
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.signals import user_logged_in
+import jwt
 
 # rest_framework
 from rest_framework import status
@@ -10,8 +8,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework_jwt.utils import jwt_payload_handler
-import jwt
 
+# django imports
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.signals import user_logged_in
+
+#  local imports
 from .serializers import CreateUserSerializer
 from config.settings import local as settings
 
@@ -21,13 +24,6 @@ User = get_user_model()
 class CreateUser(CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CreateUserSerializer
-
-    # def post(self, request):
-    #     user = request.data
-    #     serializer = UserSerializer(data=user)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
