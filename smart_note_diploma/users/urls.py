@@ -7,5 +7,6 @@ from smart_note_diploma.users.api.views import CreateUser, authenticate_user
 app_name = "users"
 urlpatterns = [
     path("create/", CreateUser.as_view(), name="create_user"),
-    path("login/", authenticate_user, name="authenticate_user")
+    path("login/", authenticate_user, name="authenticate_user"),
+    path("favorite/", authenticate_user, name="favorite")
 ]

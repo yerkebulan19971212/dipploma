@@ -7,7 +7,7 @@ from smart_note_diploma.notes.models import (NoteBooks)
 
 class NoteBookListView(ListAPIView):
     serializer_class = NoteBookSeriallizer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
