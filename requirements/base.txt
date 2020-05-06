@@ -24,3 +24,4 @@ djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 # JWT authenticaiton
 djangorestframework-jwt
 
+djangorestframework_simplejwt

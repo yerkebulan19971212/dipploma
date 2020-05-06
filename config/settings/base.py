@@ -310,7 +310,7 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+      'rest_framework_simplejwt.authentication.JWTAuthentication',
   ),
   'DEFAULT_PERMISSION_CLASSES': [
     'rest_framework.permissions.AllowAny',
@@ -323,7 +323,7 @@ JWT_AUTH = {
 
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24*90),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*60*24*90),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 
 }

@@ -23,7 +23,6 @@ User = get_user_model()
 
 
 class CreateUser(CreateAPIView):
-    """ This view create a new user """
     permission_classes = (AllowAny,)
     serializer_class = CreateUserSerializer
 
@@ -34,8 +33,10 @@ def authenticate_user(request):
     try:
         email = request.data['email']
         password = request.data['password']
-
-        user = get_object_or_404(User, email=email, password=password)
+        print(email )
+        #
+        user = get_object_or_404(User, email=email)
+        user.check_password(password)
         if user:
             try:
                 payload = jwt_payload_handler(user)
@@ -53,5 +54,5 @@ def authenticate_user(request):
                 'error': 'can not authenticate with the given credentials or the account has been deactivated'}
             return Response(res, status=status.HTTP_403_FORBIDDEN)
     except KeyError:
-        res = {'error': 'please provide a email and a password'}
+        res = {'error': password}
         return Response(res)
