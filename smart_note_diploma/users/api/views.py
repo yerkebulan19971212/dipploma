@@ -1,51 +1,45 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.signals import user_logged_in
-
-# rest_framework
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin
-from rest_framework.response import Response
-# from django.contrib.auth.signals import user_logged_in
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions
-from rest_framework_jwt.utils import jwt_payload_handler
+# python library imports
 import jwt
 
-from .serializers import UserSerializer
+# rest_framework imports
+from rest_framework import status
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework_jwt.utils import jwt_payload_handler
+
+# django imports
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.signals import user_logged_in
+
+#  local imports
+from .serializers import CreateUserSerializer
 from config.settings import local as settings
 
+# get User model
 User = get_user_model()
 
 
-class CreateUserAPIView(APIView):
-    # permission_classes = (AllowAny,)
-
-    def post(self, request):
-        user = request.data
-        serializer = UserSerializer(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class CreateUser(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = CreateUserSerializer
 
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny, ])
+@permission_classes((AllowAny, ))
 def authenticate_user(request):
     try:
         email = request.data['email']
         password = request.data['password']
 
-        user = User.objects.get(email=email, password=password)
+        user = get_object_or_404(User, email=email, password=password)
         if user:
             try:
                 payload = jwt_payload_handler(user)
                 token = jwt.encode(payload, settings.SECRET_KEY)
-                user_details = {}
-                user_details['name'] = "%s %s" % (
-                    user.first_name, user.last_name)
+                user_details = dict()
                 user_details['token'] = token
                 user_logged_in.send(sender=user.__class__,
                                     request=request, user=user)

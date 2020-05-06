@@ -72,11 +72,12 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "django_celery_beat",
-
 ]
 
 LOCAL_APPS = [
     "smart_note_diploma.users.apps.UsersConfig",
+    "smart_note_diploma.core.apps.CoreConfig",
+    "smart_note_diploma.notes.apps.NotesConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -116,7 +117,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
@@ -320,7 +323,7 @@ JWT_AUTH = {
 
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24*90),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 
 }

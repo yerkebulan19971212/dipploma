@@ -15,6 +15,7 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("smart_note_diploma.users.urls", namespace="users")),
+    path("notes/", include("smart_note_diploma.notes.urls", namespace="notes")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
