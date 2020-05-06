@@ -7,7 +7,6 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions
 from rest_framework_jwt.utils import jwt_payload_handler
 
 # django imports
@@ -29,7 +28,7 @@ class CreateUser(CreateAPIView):
 
 
 @api_view(['POST'])
-@permission_classes([permissions.AllowAny, ])
+@permission_classes((AllowAny, ))
 def authenticate_user(request):
     try:
         email = request.data['email']
