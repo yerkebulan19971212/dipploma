@@ -23,6 +23,7 @@ User = get_user_model()
 
 
 class CreateUser(CreateAPIView):
+    """ This view create a new user """
     permission_classes = (AllowAny,)
     serializer_class = CreateUserSerializer
 
