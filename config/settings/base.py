@@ -300,22 +300,22 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # django-reset-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-}
-
 # REST_FRAMEWORK = {
-#   'DEFAULT_AUTHENTICATION_CLASSES': (
-#     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-#   ),
-#   'DEFAULT_PERMISSION_CLASSES': [
-#     'rest_framework.permissions.AllowAny',
-#   ]
+#     "DEFAULT_AUTHENTICATION_CLASSES": (
+#         "rest_framework.authentication.SessionAuthentication",
+#         "rest_framework.authentication.TokenAuthentication",
+#     ),
+#     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 # }
+
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+  ),
+  'DEFAULT_PERMISSION_CLASSES': [
+    'rest_framework.permissions.AllowAny',
+  ]
+}
 
 
 
@@ -323,7 +323,7 @@ JWT_AUTH = {
 
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24*90),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 
 }

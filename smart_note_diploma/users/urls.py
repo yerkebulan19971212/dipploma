@@ -8,5 +8,4 @@ app_name = "users"
 urlpatterns = [
     path("create/", CreateUser.as_view(), name="create_user"),
     path("login/", authenticate_user, name="authenticate_user"),
-    path("favorite/", authenticate_user, name="favorite")
 ]

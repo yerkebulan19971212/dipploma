@@ -12,3 +12,8 @@ class Note(TimeStampedModel):
 class NoteBooks(TimeStampedModel):
     name = models.CharField(max_length=250)
     notes = models.ManyToManyField(Note, blank=True)
+
+
+class Favorite(TimeStampedModel):
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

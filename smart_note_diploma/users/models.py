@@ -4,7 +4,6 @@ from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
 
 from smart_note_diploma.users.manager import UserManager
 from smart_note_diploma.core.models import (TimeStampedModel, Country)
-from smart_note_diploma.notes.models import Note
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
@@ -18,7 +17,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    favorite = models.ManyToManyField(Note, null=True, blank=True)
 
     objects = UserManager()
 
