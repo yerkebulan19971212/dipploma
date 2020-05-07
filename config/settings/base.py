@@ -318,14 +318,13 @@ REST_FRAMEWORK = {
 }
 
 
+from datetime import timedelta
+
 
 JWT_AUTH = {
-
-    'JWT_VERIFY': True,
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*60*24*90),
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': timedelta(hours=1),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
