@@ -8,10 +8,16 @@ class Note(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     hash_tags = models.ManyToManyField(Hashtag, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class NoteBooks(TimeStampedModel):
     name = models.CharField(max_length=250)
     notes = models.ManyToManyField(Note, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Favorite(TimeStampedModel):
