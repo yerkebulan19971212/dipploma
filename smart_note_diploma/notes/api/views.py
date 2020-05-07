@@ -1,17 +1,23 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from smart_note_diploma.notes.api.serializers import (NoteBookSeriallizer, FavoriteSerializer)
+from smart_note_diploma.notes.api.serializers import (NoteBookSerializer, FavoriteSerializer)
 from smart_note_diploma.notes.models import (NoteBooks, Favorite)
 
 
 class NoteBookListView(ListAPIView):
-    serializer_class = NoteBookSeriallizer
+    """
+    This view return list of all NoteBooks
+    for authentication user
+    """
+    serializer_class = NoteBookSerializer
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
-        queryset = NoteBooks.objects.filter(notes__user=user).distinct()
+        queryset = NoteBooks.objects.filter(notes__user=user)\
+            .distinct()\
+            .order_by('name')
         return queryset
 
 

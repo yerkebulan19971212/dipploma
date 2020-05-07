@@ -9,14 +9,19 @@ class NoteSeriallizer(serializers.ModelSerializer):
         fields = ('name', )
 
 
-class NoteBookSeriallizer(serializers.ModelSerializer):
-    notes = serializers.SerializerMethodField('get_count_of_notes')
+class NoteBookSerializer(serializers.ModelSerializer):
+    """
+    This Serializer return properties of Notebook
+    use it to return Notebooks-list
+    """
+    number_of_notes = serializers.SerializerMethodField('get_count_of_notes')
 
     class Meta:
         model = NoteBooks
-        fields = ('name', 'notes')
+        fields = ('id', 'name', 'number_of_notes', )
 
     def get_count_of_notes(self, obj):
+        """ This function counts how many notes """
         return obj.notes.all().count()
 
 
