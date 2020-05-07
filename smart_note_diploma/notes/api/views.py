@@ -18,7 +18,7 @@ class AllNoteListView(ListAPIView):
     for authentication user
     """
     serializer_class = NoteSerializer
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
@@ -36,7 +36,7 @@ class NoteBookListView(ListAPIView):
     for authentication user
     """
     serializer_class = NoteBookSerializer
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
@@ -51,7 +51,7 @@ note_book_list_view = NoteBookListView.as_view()
 
 class NoteListByNoteBookListView(ListAPIView):
     serializer_class = NoteSerializer
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -69,7 +69,8 @@ class GetFavoriteView(ListAPIView):
     # permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        return Favorite.objects.filter(user=self.request.user)
+        user = self.request.user
+        return Favorite.objects.filter(user=user)
 
 
 favorite_note_list_view = GetFavoriteView.as_view()
