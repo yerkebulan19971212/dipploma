@@ -9,7 +9,25 @@ from django.shortcuts import get_object_or_404
 from smart_note_diploma.notes.api.serializers import (
     NoteBookSerializer, FavoriteSerializer, NoteSerializer
 )
-from smart_note_diploma.notes.models import (NoteBooks, Favorite)
+from smart_note_diploma.notes.models import (Note, NoteBooks, Favorite)
+
+
+class AllNoteListView(ListAPIView):
+    """
+    This view return list of All Notes
+    for authentication user
+    """
+    serializer_class = NoteSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Note.objects.filter(user=user)\
+            .order_by('modified')
+        return queryset
+
+
+all_note_list_view = AllNoteListView.as_view()
 
 
 class NoteBookListView(ListAPIView):
