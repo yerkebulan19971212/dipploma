@@ -18,7 +18,7 @@ class NoteBookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NoteBooks
-        fields = ('id', 'name', 'number_of_notes', )
+        fields = ('id', 'name', 'number_of_notes', 'created', )
 
     def get_count_of_notes(self, obj):
         """ This function counts how many notes """
