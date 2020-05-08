@@ -29,6 +29,7 @@ class NoteBookSerializer(serializers.ModelSerializer):
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
+    note = NoteSerializer(read_only=True)
 
     class Meta:
         model = Favorite

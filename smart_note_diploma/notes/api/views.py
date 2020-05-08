@@ -65,12 +65,15 @@ note_list_by_note_book = NoteListByNoteBookListView.as_view()
 
 
 class GetFavoriteView(ListAPIView):
-    serializer_class = FavoriteSerializer
+    serializer_class = NoteSerializer
     # permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
-        return Favorite.objects.filter(user=user)
+        faivorite = Favorite.objects.filter(user=user)
+        faivorite_arr = [i.note.pk for i in faivorite]
+        queryset = Note.objects.filter(pk__in=faivorite_arr)
+        return queryset
 
 
 favorite_note_list_view = GetFavoriteView.as_view()
