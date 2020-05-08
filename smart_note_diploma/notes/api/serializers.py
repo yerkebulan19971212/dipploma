@@ -2,6 +2,15 @@ from rest_framework import serializers
 from smart_note_diploma.notes.models import Note, NoteBooks, Favorite
 
 
+class CreateNoteSerializer(serializers.ModelSerializer):
+    """
+
+    """
+    class Meta:
+        model = Note
+        fields = ('id', 'name', 'color',)
+
+
 class NoteSerializer(serializers.ModelSerializer):
     """
     This serializer return list of Note

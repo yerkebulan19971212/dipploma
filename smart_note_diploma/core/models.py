@@ -21,8 +21,8 @@ class Country(models.Model):
         return " - ".join([self.short_name, self.name])
 
 
-class Hashtag(models.Model):
-    hash_tag = models.CharField(max_length=16)
+class HashTag(models.Model):
+    title = models.CharField(max_length=16)
 
     def __str__(self):
-        return self.hash_tag
+        return self.title
