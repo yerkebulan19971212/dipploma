@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from smart_note_diploma.notes.models import Note, NoteBooks, Favorite
+from smart_note_diploma.notes.models import Note, NoteBooks, Image
 
 
 class CreateNoteSerializer(serializers.ModelSerializer):
@@ -8,7 +8,24 @@ class CreateNoteSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Note
-        fields = ('id', 'name', 'color',)
+        fields = ('id', 'name',)
+
+
+class CreateImage(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = ('path', )
+
+
+class FavoriteNoteSerializer(serializers.ModelSerializer):
+    """
+    This serializer return list of Note
+    use it to return Note-list
+    """
+    class Meta:
+        model = Note
+        fields = ('id', 'favorite', )
 
 
 class NoteSerializer(serializers.ModelSerializer):
@@ -19,6 +36,15 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ('id', 'name', 'modified', )
+
+
+class CreateNoteBookSerializer(serializers.ModelSerializer):
+    """
+
+    """
+    class Meta:
+        model = NoteBooks
+        fields = ('name', )
 
 
 class NoteBookSerializer(serializers.ModelSerializer):
@@ -37,9 +63,9 @@ class NoteBookSerializer(serializers.ModelSerializer):
         return obj.notes.all().count()
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
-    note = NoteSerializer(read_only=True)
-
-    class Meta:
-        model = Favorite
-        fields = ('note', )
+# class FavoriteSerializer(serializers.ModelSerializer):
+#     note = NoteSerializer(read_only=True)
+#
+#     class Meta:
+#         model = Favorite
+#         fields = ('note', )

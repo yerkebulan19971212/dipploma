@@ -6,8 +6,8 @@ from smart_note_diploma.users.models import User
 class Note(TimeStampedModel):
     name = models.CharField(max_length=250)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    color = models.IntegerField()
-    # favorite = models.BooleanField(default=False)
+    color = models.IntegerField(default=0)
+    favorite = models.BooleanField(default=False)
     hash_tags = models.ManyToManyField(HashTag, blank=True)
 
     def __str__(self):
@@ -40,6 +40,6 @@ class CheckBox(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
 
 
-class Favorite(TimeStampedModel):
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+# class Favorite(TimeStampedModel):
+#     note = models.ForeignKey(Note, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)

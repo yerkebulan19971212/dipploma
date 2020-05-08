@@ -1,5 +1,5 @@
 # rest-framework imports
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,17 +10,18 @@ from django.shortcuts import get_object_or_404
 
 # local imports
 from smart_note_diploma.notes.api.serializers import (
-    NoteBookSerializer, FavoriteSerializer, NoteSerializer, CreateNoteSerializer
+    NoteBookSerializer, NoteSerializer, CreateNoteSerializer,
+    CreateImage, CreateNoteBookSerializer, FavoriteNoteSerializer
 )
 from smart_note_diploma.notes.models import (
-    Note, NoteBooks, Favorite,
+    Note, NoteBooks,
     Text, CheckBox, Image
 )
 from smart_note_diploma.core.models import (HashTag)
-import json
 
 
 class CreateNoteAPIView(APIView):
+    # parser_classes = (FileUploadParser, )
     def post(self, request, *args, **kwargs):
         data = request.data
         user = request.user
@@ -52,7 +53,19 @@ class CreateNoteAPIView(APIView):
                         is_done=value.get("isDone")
                     )
                     check_box.save()
-        return Response(note.pk, status.HTTP_201_CREATED)
+                elif contents[i].get('type') == 2:
+                    serializer = CreateImage(data=value)
+                    if serializer.is_valid():
+                        return Response({"SSS": "SS"}, status.HTTP_201_CREATED)
+                    return Response({"11111": "SS"}, status.HTTP_201_CREATED)
+
+                    # serializer.save(note=note)
+                    # iamge = Image.objects.create(
+                    #     note=note,
+                    #     path=value.get('image')
+                    # )
+                    # iamge.save()
+        return Response(note_serilizer.data, status.HTTP_201_CREATED)
 
 
 create_note_view = CreateNoteAPIView.as_view()
@@ -75,7 +88,7 @@ class AllNoteListView(ListAPIView):
     for authentication user
     """
     serializer_class = NoteSerializer
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
@@ -87,13 +100,21 @@ class AllNoteListView(ListAPIView):
 all_note_list_view = AllNoteListView.as_view()
 
 
+class CreateNoteBookView(CreateAPIView):
+    serializer_class = CreateNoteBookSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+create_note_book_view = CreateNoteBookView.as_view()
+
+
 class NoteBookListView(ListAPIView):
     """
     This view return list of all NoteBooks
     for authentication user
     """
     serializer_class = NoteBookSerializer
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
@@ -108,7 +129,7 @@ note_book_list_view = NoteBookListView.as_view()
 
 class NoteListByNoteBookListView(ListAPIView):
     serializer_class = NoteSerializer
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -121,15 +142,28 @@ class NoteListByNoteBookListView(ListAPIView):
 note_list_by_note_book = NoteListByNoteBookListView.as_view()
 
 
+class AddToFavoriteView(UpdateAPIView):
+    serializer_class = FavoriteNoteSerializer
+    permission_classes = (IsAuthenticated, )
+    queryset = Note.objects.all()
+
+    def perform_update(self, serializer):
+        pk = self.kwargs['pk']
+        queryset = Note.objects.filter(pk=pk)
+        queryset.update(favorite=True)
+        serializer.save()
+
+
+add_to_favorite_view = AddToFavoriteView.as_view()
+
+
 class GetFavoriteView(ListAPIView):
     serializer_class = NoteSerializer
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         user = self.request.user
-        faivorite = Favorite.objects.filter(user=user)
-        faivorite_arr = [i.note.pk for i in faivorite]
-        queryset = Note.objects.filter(pk__in=faivorite_arr)
+        queryset = Note.objects.filter(user=user, favorite=True)
         return queryset
 
 
