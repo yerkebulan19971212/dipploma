@@ -10,5 +10,5 @@ urlpatterns = [
     path('all-notes/', all_note_list_view),
     path('notebooks/', note_book_list_view),
     path('notebooks/<int:pk>/notes/', note_list_by_note_book),
-    path("favorite/", favorite_note_list_view),
+    path("favorites/", favorite_note_list_view),
 ]
