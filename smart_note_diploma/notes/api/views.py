@@ -148,6 +148,13 @@ class NoteListByNoteBookListView(ListAPIView):
 note_list_by_note_book = NoteListByNoteBookListView.as_view()
 
 
+class AddNoteToNoteBookView(APIView):
+    pass
+
+
+add_note_to_the_note_book = AddNoteToNoteBookView.as_view()
+
+
 class AddToFavoriteView(UpdateAPIView):
     """
     This view adds a note to favorites and removes from favorites
