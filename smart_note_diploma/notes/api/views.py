@@ -11,15 +11,16 @@ from django.shortcuts import get_object_or_404
 # local imports
 from smart_note_diploma.notes.api.serializers import (
     NoteBookSerializer, NoteSerializer, CreateNoteSerializer,
-    CreateImage, CreateNoteBookSerializer, FavoriteNoteSerializer
+    CreateImage, CreateNoteBookSerializer, FavoriteNoteSerializer, ImageSerializer
 )
 from smart_note_diploma.notes.models import (
     Note, NoteBooks,
     Text, CheckBox, Image
 )
 from smart_note_diploma.core.models import (HashTag)
+import base64
 
-
+from django.core.files.base import ContentFile
 class CreateNoteAPIView(APIView):
     # parser_classes = (FileUploadParser, )
     def post(self, request, *args, **kwargs):
@@ -54,19 +55,20 @@ class CreateNoteAPIView(APIView):
                     )
                     check_box.save()
                 elif contents[i].get('type') == 2:
-                    serializer = CreateImage(data=value)
+                    serializer = ImageSerializer(data=value)
                     if serializer.is_valid():
-                        return Response({"SSS": "SS"}, status.HTTP_201_CREATED)
-                    return Response({"11111": "SS"}, status.HTTP_201_CREATED)
+                        serializer.save(note=note, order=i, )
+                    return Response({"11111": "shykpady"}, status.HTTP_201_CREATED)
 
-                    # serializer.save(note=note)
-                    # iamge = Image.objects.create(
-                    #     note=note,
-                    #     path=value.get('image')
-                    # )
-                    # iamge.save()
         return Response(note_serilizer.data, status.HTTP_201_CREATED)
 
+    def get_file_extension(self, file_name, decoded_file):
+        import imghdr
+
+        extension = imghdr.what(file_name, decoded_file)
+        extension = "jpg" if extension == "jpeg" else extension
+
+        return extension
 
 create_note_view = CreateNoteAPIView.as_view()
 

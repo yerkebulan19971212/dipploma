@@ -24,6 +24,7 @@ class NoteBooks(TimeStampedModel):
 
 class Image(models.Model):
     path = models.ImageField(upload_to='images/', blank=True, null=True)
+    order = models.IntegerField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
 
 
