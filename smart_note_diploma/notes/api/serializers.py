@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from smart_note_diploma.notes.models import Note, NoteBooks, Image
+from smart_note_diploma.notes.models import Note, NoteBooks, Image, Text, CheckBox
 from django.core.files.base import ContentFile
+from smart_note_diploma.core.api.serializers import HashTagsSerializers
+from smart_note_diploma.core.models import HashTag
 
 
 class CreateNoteSerializer(serializers.ModelSerializer):
@@ -10,6 +12,90 @@ class CreateNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ('id', 'name',)
+
+
+class GetImageSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField('get_type')
+
+    class Meta:
+        model = Image
+        fields = ('path', 'order', 'type', )
+
+    def get_type(self, obj):
+        return 2
+
+
+class TextSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField('get_type')
+
+    class Meta:
+        model = Text
+        fields = ('text', 'order', 'type', )
+
+    def get_type(self, obj):
+        return 0
+
+
+class CheckBoxSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField('get_type')
+
+    class Meta:
+        model = CheckBox
+        fields = ('text', 'is_done', 'order', 'type', )
+
+    def get_type(self):
+        return 1
+
+
+class GetNoteSerializer(serializers.ModelSerializer):
+    """
+
+    """
+    hash_tags_list = serializers.SerializerMethodField('get_hash_tags')
+    # image = serializers.SerializerMethodField('get_content')
+    content = serializers.SerializerMethodField('get_content')
+    class Meta:
+        model = Note
+        fields = ('id', 'name', 'favorite', 'color', 'hash_tags_list','content')
+
+    def get_hash_tags(self, obj):
+        serializers = HashTagsSerializers(obj.hash_tags, read_only=True, many=True)
+        hash_tags = [i['title'] for i in serializers.data]
+        return hash_tags
+
+    def get_image(self, obj):
+        image = Image.objects.filter(note=obj)
+        image_serialzier = GetImageSerializer(image, many=True)
+        return image_serialzier.data
+
+    def get_text(self, obj):
+        text = Text.objects.filter(note=obj)
+        text_serializer = TextSerializer(text, many=True)
+        return text_serializer.data
+
+    def get_check_box(self, obj):
+        check_box = CheckBox.objects.filter(note=obj)
+        check_box_serializer = CheckBoxSerializer(check_box, many=True)
+        return check_box_serializer.data
+
+    def get_content(self, obj):
+        content_result = []
+
+        images = self.get_image(obj)
+        if images:
+            content_result += images
+
+        texts = self.get_text(obj)
+        if texts:
+            content_result += texts
+
+        check_boxes = self.get_check_box(obj)
+        if check_boxes:
+            content_result += check_boxes
+        # return content_result
+        return sorted(content_result, key=lambda i: int(i['order']))
+
+
 class Base64ImageField(serializers.ImageField):
     """
     A Django REST framework field for handling image-uploads through raw post data.
@@ -69,11 +155,7 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = ('path', )
 
-class CreateImage(serializers.ImageField):
 
-    class Meta:
-        model = Image
-        fields = ('path', )
 
 
 class FavoriteNoteSerializer(serializers.ModelSerializer):

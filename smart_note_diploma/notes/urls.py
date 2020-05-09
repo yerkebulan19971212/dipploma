@@ -1,13 +1,15 @@
 from django.urls import path
 from .api.views import (
     note_book_list_view, note_list_by_note_book, favorite_note_list_view,
-    all_note_list_view, create_note_view, create_note_book_view, add_to_favorite_view
+    all_note_list_view, create_note_view, create_note_book_view, add_to_favorite_view,
+    get_note_page_view,
 )
 
 
 app_name = "notes"
 urlpatterns = [
     path('create/', create_note_view),
+    path('<int:pk>/', get_note_page_view),
     path('notebooks/create/', create_note_book_view),
     path('all-notes/', all_note_list_view),
     path('notebooks/', note_book_list_view),

@@ -11,18 +11,20 @@ from django.shortcuts import get_object_or_404
 # local imports
 from smart_note_diploma.notes.api.serializers import (
     NoteBookSerializer, NoteSerializer, CreateNoteSerializer,
-    CreateImage, CreateNoteBookSerializer, FavoriteNoteSerializer, ImageSerializer
+    CreateNoteBookSerializer, FavoriteNoteSerializer, ImageSerializer,
+    GetNoteSerializer,
 )
 from smart_note_diploma.notes.models import (
     Note, NoteBooks,
-    Text, CheckBox, Image
+    Text, CheckBox,
 )
 from smart_note_diploma.core.models import (HashTag)
-import base64
 
-from django.core.files.base import ContentFile
+
 class CreateNoteAPIView(APIView):
-    # parser_classes = (FileUploadParser, )
+    """
+    This View creates a new Note
+    """
     def post(self, request, *args, **kwargs):
         data = request.data
         user = request.user
@@ -62,23 +64,15 @@ class CreateNoteAPIView(APIView):
 
         return Response(note_serilizer.data, status.HTTP_201_CREATED)
 
-    def get_file_extension(self, file_name, decoded_file):
-        import imghdr
-
-        extension = imghdr.what(file_name, decoded_file)
-        extension = "jpg" if extension == "jpeg" else extension
-
-        return extension
 
 create_note_view = CreateNoteAPIView.as_view()
 
 
 class GetNoteView(RetrieveAPIView):
-    pass
-    # serializer_class =
-    # def get(self, request, pk):
-    #     note = get_object_or_404(Note, pk=pk)
-    #     check_box = CheckBox.objects.filter()
+    serializer_class = GetNoteSerializer
+    permission_classes = (IsAuthenticated, )
+    queryset = Note.objects.all()
+    lookup_field = 'pk'
 
 
 get_note_page_view = GetNoteView.as_view()
@@ -103,6 +97,9 @@ all_note_list_view = AllNoteListView.as_view()
 
 
 class CreateNoteBookView(CreateAPIView):
+    """
+    This View Creates a new NoteBook
+    """
     serializer_class = CreateNoteBookSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -116,7 +113,7 @@ create_note_book_view = CreateNoteBookView.as_view()
 
 class NoteBookListView(ListAPIView):
     """
-    This view return list of all NoteBooks
+    This view returns list of all NoteBooks
     for authentication user
     """
     serializer_class = NoteBookSerializer
@@ -134,6 +131,9 @@ note_book_list_view = NoteBookListView.as_view()
 
 
 class NoteListByNoteBookListView(ListAPIView):
+    """
+    This View returns list of Notes by Notebook
+    """
     serializer_class = NoteSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -149,21 +149,22 @@ note_list_by_note_book = NoteListByNoteBookListView.as_view()
 
 
 class AddToFavoriteView(UpdateAPIView):
+    """
+    This view adds a note to favorites and removes from favorites
+    """
     serializer_class = FavoriteNoteSerializer
     permission_classes = (IsAuthenticated, )
     queryset = Note.objects.all()
-
-    def perform_update(self, serializer):
-        pk = self.kwargs['pk']
-        queryset = Note.objects.filter(pk=pk)
-        queryset.update(favorite=True)
-        serializer.save()
+    lookup_field = 'pk'
 
 
 add_to_favorite_view = AddToFavoriteView.as_view()
 
 
 class GetFavoriteView(ListAPIView):
+    """
+    This view return all Favorite-list
+    """
     serializer_class = NoteSerializer
     permission_classes = (IsAuthenticated, )
 
