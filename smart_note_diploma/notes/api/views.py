@@ -106,6 +106,10 @@ class CreateNoteBookView(CreateAPIView):
     serializer_class = CreateNoteBookSerializer
     permission_classes = (IsAuthenticated, )
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
+
 
 create_note_book_view = CreateNoteBookView.as_view()
 
@@ -120,7 +124,7 @@ class NoteBookListView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = NoteBooks.objects.filter(notes__user=user)\
+        queryset = NoteBooks.objects.filter(user=user)\
             .distinct()\
             .order_by('name')
         return queryset
