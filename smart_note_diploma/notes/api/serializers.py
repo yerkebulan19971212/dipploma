@@ -1,14 +1,10 @@
 from rest_framework import serializers
 from smart_note_diploma.notes.models import Note, NoteBooks, Image, Text, CheckBox
-from django.core.files.base import ContentFile
 from smart_note_diploma.core.api.serializers import HashTagsSerializers
-from smart_note_diploma.core.models import HashTag
 
 
 class CreateNoteSerializer(serializers.ModelSerializer):
-    """
-
-    """
+    """ This serializer Create a new Note   """
     class Meta:
         model = Note
         fields = ('id', 'name',)
@@ -43,24 +39,22 @@ class CheckBoxSerializer(serializers.ModelSerializer):
         model = CheckBox
         fields = ('text', 'is_done', 'order', 'type', )
 
-    def get_type(self):
+    def get_type(self, obj):
         return 1
 
 
 class GetNoteSerializer(serializers.ModelSerializer):
-    """
-
-    """
+    """ This serializer Retrieve Note """
     hash_tags_list = serializers.SerializerMethodField('get_hash_tags')
-    # image = serializers.SerializerMethodField('get_content')
     content = serializers.SerializerMethodField('get_content')
+
     class Meta:
         model = Note
         fields = ('id', 'name', 'favorite', 'color', 'hash_tags_list','content')
 
     def get_hash_tags(self, obj):
-        serializers = HashTagsSerializers(obj.hash_tags, read_only=True, many=True)
-        hash_tags = [i['title'] for i in serializers.data]
+        serializer = HashTagsSerializers(obj.hash_tags, read_only=True, many=True)
+        hash_tags = [i['title'] for i in serializer.data]
         return hash_tags
 
     def get_image(self, obj):
@@ -92,7 +86,7 @@ class GetNoteSerializer(serializers.ModelSerializer):
         check_boxes = self.get_check_box(obj)
         if check_boxes:
             content_result += check_boxes
-        # return content_result
+
         return sorted(content_result, key=lambda i: int(i['order']))
 
 
@@ -156,8 +150,6 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ('path', )
 
 
-
-
 class FavoriteNoteSerializer(serializers.ModelSerializer):
     """
     This serializer return list of Note
@@ -201,11 +193,3 @@ class NoteBookSerializer(serializers.ModelSerializer):
     def get_count_of_notes(self, obj):
         """ This function counts how many notes """
         return obj.notes.all().count()
-
-
-# class FavoriteSerializer(serializers.ModelSerializer):
-#     note = NoteSerializer(read_only=True)
-#
-#     class Meta:
-#         model = Favorite
-#         fields = ('note', )

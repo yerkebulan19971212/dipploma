@@ -28,11 +28,17 @@ class Image(models.Model):
     order = models.IntegerField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.path.name
+
 
 class Text(models.Model):
     text = models.TextField(default='')
     order = models.IntegerField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return  self.text
 
 
 class CheckBox(models.Model):
@@ -41,7 +47,6 @@ class CheckBox(models.Model):
     order = models.IntegerField()
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.text
 
-# class Favorite(TimeStampedModel):
-#     note = models.ForeignKey(Note, on_delete=models.CASCADE)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
